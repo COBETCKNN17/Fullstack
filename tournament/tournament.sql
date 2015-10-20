@@ -6,6 +6,9 @@
 -- You can write comments in this file by starting them with two dashes, like
 -- these lines here.
 
+/* remove previous database data if tournament already exists*/
+DROP DATABASE IF EXISTS tournament;
+
 /* Create the database tournament */
 CREATE DATABASE tournament;
 
@@ -33,10 +36,10 @@ SELECT players.player_id, players.name,
     FROM results
     WHERE players.player_id = results.winner
     OR players.player_id = results.loser)
-    AS total_matches
+    AS total_matches,
 (SELECT count(results.winner)
     FROM results
     WHERE players.player_id = results.winner)
-    AS total_wins,
+    AS total_wins
 FROM players
 ORDER BY total_wins DESC, total_matches DESC;

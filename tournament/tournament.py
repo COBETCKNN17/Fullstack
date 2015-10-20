@@ -34,8 +34,8 @@ def countPlayers():
     conn = connect()
     c = conn.cursor()
     c.execute("SELECT count(player_id) as player_count FROM players;")
-    player_count = c.fetchall()
-    conn.commit()
+    player_count = c.fetchone()[0]
+    conn.close()
     return player_count
 
 def registerPlayer(name):
@@ -49,7 +49,7 @@ def registerPlayer(name):
     """
     conn = connect()
     c = conn.cursor()
-    c.execute("INSERT INTO players(player_id, name) VALUES(default, %s);")
+    c.execute("INSERT INTO players(player_id, name) VALUES(default, %s)", (name,))
     conn.commit()
     conn.close()
 
@@ -70,7 +70,7 @@ def playerStandings():
     conn = connect()
     c = conn.cursor()
     c.execute("SELECT * FROM standings;")
-    conn.commit()
+    standings = cursor.fetchall()
     conn.close()
     return standings
     
@@ -111,6 +111,15 @@ def swissPairings():
     cursor.execute("SELECT player_id, name FROM standings \
                     ORDER BY total_wins DESC;")
     winning_list = cursor.fetchall()
+    if len(winning_list) % 2 ==0:
+        for i in range(0, len(winning_list), 2):
+            players = winning_list[i][0], winning_list[i][1], \
+                      winning_list[i+1][0], winning_list[i+1][1]
+            pair.append(players)
+        return pair
+    else:
+        print "There is an odd number of active players"
+        
     db_connect.close()
 
 
