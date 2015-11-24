@@ -18,28 +18,28 @@ CREATE DATABASE tournament;
 /* Create players table */
 CREATE TABLE players (
         player_id serial PRIMARY KEY,
-        name varchar (25) 
+        name varchar (25) NOT NULL
 );
 
 /* Create results table */
 CREATE TABLE results (
         match_id serial PRIMARY KEY,
-        winner integer REFERENCES players(player_id),
-        loser integer REFERENCES players(player_id)
+        winner integer REFERENCES players(player_id) NOT NULL,
+        loser integer REFERENCES players(player_id) NOT NULL
+        CHECK (winner <> loser)
 );
 
-/* Create view to track match prorgres*/
-/* player_id, player name, number of matches, number of wins*/
+/* player_id, player name, number of wins, number of matches */
 CREATE VIEW standings AS
 SELECT players.player_id, players.name,
+(SELECT count(results.winner)
+    FROM results
+    WHERE players.player_id = results.winner)
+    AS total_wins,
 (SELECT count(results.match_id)
     FROM results
     WHERE players.player_id = results.winner
     OR players.player_id = results.loser)
-    AS total_matches,
-(SELECT count(results.winner)
-    FROM results
-    WHERE players.player_id = results.winner)
-    AS total_wins
+    AS total_matches
 FROM players
 ORDER BY total_wins DESC, total_matches DESC;
