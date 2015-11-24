@@ -1,0 +1,48 @@
+<html>
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<head>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
+
+	</head>
+	
+<body>
+
+	<h1>Cat Supplies</h1>
+	<div class="header" > 
+		{% if not login_session['user_id'] %}
+    	<a href= '{{ url_for('showLogin') }}'> Sign in </a>
+  		{% else %}
+  		<a href="{{url_for('gdisconnect')}}">Sign out</a>
+ 		 {% endif %}
+	    </div>
+
+		{% with messages = get_flashed_messages()%}
+
+			{% if messages %}
+			<p class = "flash">
+			{% for message in messages %}
+			{{message}} 
+			{% endfor %}
+			</p>
+			{% endif %}
+		{% endwith %}
+	</br>
+	<div class="pane">
+		{% for category in categories %}
+
+		<div>
+			</br>
+			<h2><a href = '{{url_for('showCoins', category_id = category.id) }}' > {{category.name}} </a></h2>
+			</br>
+			</br>
+		</div>
+
+		{% endfor %}
+
+		</br></br>
+		Log in to create, edit, or delete categories.
+		</br></br>
+
+	</div>
+</body>
+</html>

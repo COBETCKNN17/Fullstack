@@ -1,0 +1,27 @@
+<html>
+<head>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
+	</head>
+	
+<body>
+	<div class="pane">
+	<h1>Edit Coin</h1>
+	</br>
+
+	<form action = '{{url_for('editCoin', category_id = category_id, item_id = item.id) }}' method = 'post'>
+	<b> Name:</b>
+	<input type = 'text' size = '30' name = 'name', value = '{{item.name}}'>
+	<b> Mint:</b>
+	<input type = 'integer' size = '10' name = 'mint' value ='{{item.mint}}'> </br> </br>
+	<b> Image URL: </b>
+	<input type = 'text' size = '100' name = 'image' value = '{{item.image}}'> </br> </br>
+	<b> Description: </b>
+	<input type = 'text' size ='100' name ='description' value ='{{item.description}}'></br></br>
+	<input type = 'submit' value = 'Edit'>
+	</form>
+	
+	</br>
+	<a href = '{{url_for('showCoins', category_id = category_id)}}'> Cancel </a>
+	</div>
+</body>
+</html>

@@ -1,0 +1,44 @@
+
+<html>
+<head>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
+	</head>
+	
+<body>
+	<h1>{{category.name}}</h1>
+		<div class="header" > 
+		{% if not login_session['user_id'] %}
+    	<a href= '{{ url_for('showLogin') }}'> Sign in </a>
+  		{% else %}
+  		<a href="{{url_for('gdisconnect')}}">Sign out</a>
+ 		 {% endif %}
+	    </div>
+
+		<!--MESSAGE FLASHING -->
+		{% with messages = get_flashed_messages()%}
+
+			{% if messages %}
+			<p class = "flash">
+			{% for message in messages %}
+			{{message}} 
+			{% endfor %}
+			</p>
+			{% endif %}
+		{% endwith %}
+	</br>
+	
+	<div class="pane">
+		{% for i in items %}
+		<div class="img">
+		<img src = "{{i.image}}" alt = "image not available" width = "100px" ></div>
+		<p class = "name">{{i.name}} </p> 
+		<p class = "mint"> {{i.mint}} </p>
+		<p class = "description"> {{i.description}}
+		</p>
+		</br>
+		{% endfor %}
+		</br></br>
+		<a href = '{{url_for('showCategories')}}'> Go back </a>
+	</div>
+</body>
+</html>

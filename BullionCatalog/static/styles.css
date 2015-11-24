@@ -1,0 +1,52 @@
+body {
+	font-family: sans-serif; 
+	background-color: #000000;
+	text-align: center; 
+}
+
+h1 { 
+ 
+	color: #FFD700;
+	font-family: 'Georgia',sans-serif; 
+	margin: 0; padding:10; 
+	border-bottom: 2px solid #FFD700;
+	text-shadow: 1px 1px #FFD700;
+}
+
+h2 { 
+	font-family: sans-serif;
+}
+
+h3 { 
+	font-family: sans-serif;
+}
+
+a {
+	text-decoration:none; color:#000000;
+	font-size: 1em;
+}
+a:hover {
+	text-decoration: underline;
+}
+.header {
+	display: inline-block; 
+	float:right;
+	font-size: 1.2em;
+}
+
+.pane {
+	position:absolute; 
+	left: 25%; 
+	right: 25%; 
+	border: 2px solid;
+    border-radius: 15px;
+    padding: 5px; margin: 3px;
+    border-color: #FFD700;
+    background-color: #8B4513;
+}
+
+.img {text-align:left; padding-left:10%; padding-top:5%;}
+.name {width:45%; float: left; text-align:left; padding-left:5%;}
+.price {width:45%; text-align: right; display: inline-block; float:right;  padding-right:5%;}
+.ingredients { margin-top:-1% ; width:95%; display:block; float:left; text-align:left; padding-left:5%; font-size:.75em; padding-left:5%;}
+.flash          {  font-style: italic; font-weight:bold;}
