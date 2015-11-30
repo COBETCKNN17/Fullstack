@@ -18,7 +18,7 @@
           <div id="signInButton">
           <span class="g-signin"
             data-scope="openid email"
-            data-clientid="96971847535-stcrjse7864793kotpvffdjp6j57i2bv.apps.googleusercontent.com"
+            data-clientid="266595313489-ji79a1b64p3ccca5o1vqn1etvhfh0fjg.apps.googleusercontent.com"
             data-redirecturi="postmessage"
             data-accesstype="offline"
             data-cookiepolicy="single_host_origin"
@@ -48,7 +48,7 @@ function signInCallback(authResult) {
         if (result) {
           $('#result').html('Login Successful!</br>'+ result + '</br>Redirecting...')
          setTimeout(function() {
-          window.location.href = "/catsupplies/";
+          window.location.href = "/categories/";
          }, 4000);
           
       } else if (authResult['error']) {
