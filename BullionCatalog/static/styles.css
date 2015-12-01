@@ -28,10 +28,16 @@ a {
 a:hover {
 	text-decoration: underline;
 }
+
+a {
+	color: #FFD700;
+}
+
 .header {
 	display: inline-block; 
 	float:right;
 	font-size: 1.2em;
+	color:white;
 }
 
 .pane {
@@ -45,8 +51,29 @@ a:hover {
     background-color: #8B4513;
 }
 
-.img {text-align:left; padding-left:10%; padding-top:5%;}
-.name {width:45%; float: left; text-align:left; padding-left:5%;}
-.price {width:45%; text-align: right; display: inline-block; float:right;  padding-right:5%;}
-.ingredients { margin-top:-1% ; width:95%; display:block; float:left; text-align:left; padding-left:5%; font-size:.75em; padding-left:5%;}
-.flash          {  font-style: italic; font-weight:bold;}
+.flash {
+ 	font-style: italic;
+ 	font-weight:bold;
+ 	color: #FFD700;
+ }
+
+.img {
+	text-align:center;
+	padding-top:5%;
+}
+
+.name {
+	width:45%;
+	float: left;
+	text-align:center;
+	padding-left:5%;
+}
+
+.mint {
+	text-align:center;
+}
+
+.description {
+	text-align:center;
+}
+

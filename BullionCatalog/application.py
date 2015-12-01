@@ -185,14 +185,14 @@ def gdisconnect():
         response = make_response(json.dumps('Successfully disconnected.'), 200)
         response.headers['Content-Type'] = 'application/json'
         flash("logged out")
-        return redirect(url_for('listCategories'))
+        return redirect(url_for('showCategories'))
     else:
         # For whatever reason, the given token was invalid.
         response = make_response(
             json.dumps('Failed to revoke token for given user.', 400))
         response.headers['Content-Type'] = 'application/json'
         flash("log out failed")
-        return redirect(url_for('listCategories'))
+        return redirect(url_for('showCategories'))
 
 
 # Connect to database
@@ -274,10 +274,10 @@ def showCoins(category_id):
     category = session.query(Category).get(category_id)
     items = session.query(Item).filter_by(category_id=category.id)
     if 'user_id' not in login_session:
-        return render_template('item.html',category=category,
+        return render_template('category.html',category=category,
             items=items, login_session=login_session)
     else:
-        return render_template('item.html', category=category,
+        return render_template('category.html', category=category,
             items=items, login_session=login_session)
 
 

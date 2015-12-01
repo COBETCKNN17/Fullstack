@@ -24,7 +24,7 @@
 	<div class="pane">
 		{% for i in items %}
 		<div class="img">
-		<img src = "{{i.image}}" alt = "image not available" width = "100px"
+		<img src = "{{i.image}}" alt = "image not available" width = "100px">
 		</div>
 		<p class = "name">{{i.name}} </p>
 		<p class = "mint"> {{i.mint}} </p>
@@ -37,7 +37,7 @@
 		{% endfor %}
 		</br></br>
 
-		<a href = '{{url_for('newCoin', category_id = category.id ) }}' > Create a new Coin </a> | <a href = '{{url_for('showCategories')}}'> Back </a>
+		<a href = '{{url_for('newCoin', category_id = category.id ) }}' > Create a New Coin </a> | <a href = '{{url_for('showCategories')}}'> Back </a>
 	</div>
 </body>
 </html>
