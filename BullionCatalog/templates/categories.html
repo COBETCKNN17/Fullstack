@@ -7,8 +7,8 @@
 	
 <body>
 
-	<h1>Bullion <br/>
-	<img src="static/bullion-header.jpeg" alt="Bullion Image not Available" style="width:1000; height:125;">
+	<h1>Bullion Catalog <br/>
+	<img src="http://i.imgur.com/8drGkD8.jpg" alt="Bullion Image not Available" style="width:1000; height:125;">
 	</h1>
 	<h2></h2>
 		<div class="header" >
@@ -35,7 +35,7 @@
 
 		<div>
 			</br>
-			<h2><a href = '{{url_for('showCoins', category_id = category.id) }}' > {{category.name}} </a></h2>
+			<h2><a href = '{{url_for('showCategory', category_id = category.id) }}' > {{category.name}} </a></h2>
 			<a href = '{{url_for('editCategory', category_id = category.id) }}' > Edit </a> |
 			<a href = '{{url_for('deleteCategory', category_id = category.id) }}' > Delete </a>
 			</br>

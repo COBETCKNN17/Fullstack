@@ -3,7 +3,7 @@
 <head>
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
 	</head>
-	
+
 <body>
 	<h1>{{category.name}}</h1>
 		<div class="header" >
@@ -14,13 +14,13 @@
 			{% if messages %}
 			<p class = "flash">
 			{% for message in messages %}
-			{{message}} 
+			{{message}}
 			{% endfor %}
 			</p>
 			{% endif %}
 		{% endwith %}
 	</br>
-	
+
 	<div class="pane">
 		{% for i in items %}
 		<div class="img">
@@ -29,15 +29,13 @@
 		<p class = "name">Name: {{i.name}} </p>
 		<p class = "mint">Mint: {{i.mint}} </p>
 		<p class = "description">Description: {{i.description}}
-		<a href = '{{url_for('editCoin', category_id = category.id, item_id = i.id) }}' > Edit </a> |
-		<a href = '{{url_for('deleteCoin', category_id = category.id, item_id = i.id ) }}' > Delete </a>
 		</p>
 		</br>
 
 		{% endfor %}
 		</br></br>
 
-		<a href = '{{url_for('newCoin', category_id = category.id ) }}' > Create a New Coin </a> | <a href = '{{url_for('showCategories')}}'> Back </a>
+		<a href = '{{url_for('showCategories')}}'> Back </a>
 	</div>
 </body>
 </html>

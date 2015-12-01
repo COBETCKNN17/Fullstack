@@ -211,7 +211,7 @@ def showCategories():
     '''This function generates the main page, '/categories'. '''
     categories = session.query(Category).all()
     if 'user_id' not in login_session:
-        return render_template('categories.html', categories=categories,
+        return render_template('public_categories.html', categories=categories,
                                login_session=login_session)
     else:
         return render_template('categories.html', categories=categories,
@@ -222,7 +222,8 @@ def showCategories():
 @app.route('/categories/new/', methods=['GET', 'POST'])
 def newCategory():
     '''Create new Category '''
-
+    if 'user_id' not in login_session:
+        return redirect('/login')
     if request.method == 'POST':
         if request.form['name']:
             newCategory = Category(name=request.form['name'])
@@ -238,7 +239,8 @@ def newCategory():
 @app.route('/categories/<int:category_id>/edit/', methods=['GET', 'POST'])
 def editCategory(category_id):
     '''Edit new Category '''
-
+    if 'user_id' not in login_session:
+        return redirect('/login')
     editedCategory = session.query(Category).get(category_id)
     if request.method == 'POST':
         if request.form['name']:
@@ -255,7 +257,8 @@ def editCategory(category_id):
 @app.route('/categories/<int:category_id>/delete', methods=['GET', 'POST'])
 def deleteCategory(category_id):
     '''Delete existing Category '''
-
+    if 'user_id' not in login_session:
+        return redirect('/login')
     deletedCategory = session.query(Category).get(category_id)
     if request.method == 'POST':
         session.delete(deletedCategory)
@@ -269,12 +272,12 @@ def deleteCategory(category_id):
 
 # list coins inside each category
 @app.route('/categories/<int:category_id>/')
-def showCoins(category_id):
+def showCategory(category_id):
     '''Show coins saved in bullion.db - created via sqlalchemy '''
     category = session.query(Category).get(category_id)
     items = session.query(Item).filter_by(category_id=category.id)
     if 'user_id' not in login_session:
-        return render_template('category.html',category=category,
+        return render_template('public_category.html',category=category,
             items=items, login_session=login_session)
     else:
         return render_template('category.html', category=category,
@@ -285,6 +288,8 @@ def showCoins(category_id):
 @app.route('/categories/<int:category_id>/new/', methods=['GET', 'POST'])
 def newCoin(category_id):
     '''Create new coin function - will create record in bullion.db '''
+    if 'user_id' not in login_session:
+        return redirect('/login')
     category = session.query(Category).filter_by(id=category_id).one()
     if request.method == 'POST':
         newItem = Item(
@@ -296,7 +301,7 @@ def newCoin(category_id):
         session.add(newItem)
         session.commit()
         flash("New has been created")
-        return redirect(url_for('showCoins', category_id=category_id))
+        return redirect(url_for('showCategory', category_id=category_id))
     else:
         return render_template('newCoin.html', category_id=category_id)
 
@@ -305,6 +310,8 @@ def newCoin(category_id):
 @app.route('/categories/<int:category_id>/<int:item_id>/edit',methods=['GET', 'POST'])
 def editCoin(category_id, item_id):
     '''Edit a coin in bullion.db '''
+    if 'user_id' not in login_session:
+        return redirect('/login')
     category = session.query(Category).get(category_id)
     editedItem = session.query(Item).get(item_id)
     if request.method == 'POST':
@@ -319,7 +326,7 @@ def editCoin(category_id, item_id):
         session.add(editedItem)
         session.commit()
         flash("Coin has been edited")
-        return redirect(url_for('showCoins', category_id=category_id))
+        return redirect(url_for('showCategory', category_id=category_id))
     else:
         return render_template('editCoin.html',category_id=category_id,
             item_id=item_id,item=editedItem)
@@ -329,13 +336,15 @@ def editCoin(category_id, item_id):
 @app.route('/categories/<int:category_id>/<int:item_id>/delete/', methods=['GET', 'POST'])
 def deleteCoin(category_id, item_id):
     '''Delete a coin in bullion.db '''
+    if 'user_id' not in login_session:
+        return redirect('/login')
     category = session.query(Category).get(category_id)
     deletedItem = session.query(Item).get(item_id)
     if request.method == 'POST':
         session.delete(deletedItem)
         session.commit()
         flash("Item Deleted!")
-        return redirect(url_for('showCoins', category_id=category_id))
+        return redirect(url_for('showCategory', category_id=category_id))
     else:
         return render_template('deleteCoin.html',category_id=category_id,
             item_id=item_id, deletedItem=deletedItem)
@@ -345,7 +354,7 @@ def deleteCoin(category_id, item_id):
 @app.route('/categories/items/JSON')
 def allItemsJSON():
     items = session.query(Item).all()
-    return jsonify(SupplyItems=[i.serialize for i in items])
+    return jsonify(Items=[i.serialize for i in items])
 
 
 @app.route('/categories/<int:category_id>/items/JSON')
