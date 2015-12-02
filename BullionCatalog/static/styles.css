@@ -59,14 +59,10 @@ a {
 
 .img {
 	text-align:center;
-	padding-top:5%;
 }
 
 .name {
-	width:45%;
-	float: left;
 	text-align:center;
-	padding-left:5%;
 }
 
 .mint {
@@ -75,5 +71,7 @@ a {
 
 .description {
 	text-align:center;
+	width: 50%;
+	padding-left:25%
 }
 

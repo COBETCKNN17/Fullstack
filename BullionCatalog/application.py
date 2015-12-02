@@ -294,7 +294,7 @@ def newCoin(category_id):
     if request.method == 'POST':
         newItem = Item(
             name=request.form['name'],
-            mint="mint",
+            mint=request.form['mint'],
             image=request.form['image'],
             description=request.form['description'],
             category_id=category_id)
@@ -318,18 +318,18 @@ def editCoin(category_id, item_id):
         if request.form['name']:
             editedItem.name = request.form['name']
         if request.form['mint']:
-            editedItem.ingredients = request.form['mint']
+            editedItem.mint = request.form['mint']
         if request.form['image']:
             editedItem.price = request.form['image']
         if request.form['description']:
-            editedItem.image_url = request.form['description']
+            editedItem.image = request.form['description']
         session.add(editedItem)
         session.commit()
         flash("Coin has been edited")
-        return redirect(url_for('showCategory', category_id=category_id))
+        return redirect(url_for('showCategory', category_id=category_id, item_id=item_id, item=editedItem))
     else:
-        return render_template('editCoin.html',category_id=category_id,
-            item_id=item_id,item=editedItem)
+        return render_template('editCoin.html', category_id=category_id,
+            item_id=item_id, editedItem=editedItem)
 
 
 # delete an existing coin

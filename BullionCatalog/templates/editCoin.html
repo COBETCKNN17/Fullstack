@@ -8,15 +8,15 @@
 	<h1>Edit Coin</h1>
 	</br>
 
-	<form action = '{{url_for('editCoin', category_id = category_id, item_id = item.id) }}' method = 'post'>
+	<form action = '{{url_for('editCoin', category_id = category_id, item_id = item_id) }}' method = 'post'>
 	<b> Name:</b>
-	<input type = 'text' size = '30' name = 'name', value = '{{item.name}}'>
+	<input type = 'text' size = '30' name = 'name', value = '{{editedItem.name}}'>
 	<b> Mint:</b>
-	<input type = 'integer' size = '10' name = 'mint' value ='{{item.mint}}'> </br> </br>
+	<input type = 'integer' size = '10' name = 'mint' value ='{{editedItem.mint}}'> </br> </br>
 	<b> Image URL: </b>
-	<input type = 'text' size = '100' name = 'image' value = '{{item.image}}'> </br> </br>
+	<input type = 'text' size = '100' name = 'image' value = '{{editedItem.image}}'> </br> </br>
 	<b> Description: </b>
-	<input type = 'text' size ='100' name ='description' value ='{{item.description}}'></br></br>
+	<input type = 'text' size ='100' name ='description' value ='{{editedItem.description}}'></br></br>
 	<input type = 'submit' value = 'Edit'>
 	</form>
 	
