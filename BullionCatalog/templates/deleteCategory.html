@@ -5,15 +5,16 @@
 	
 <body>
 	<h1>Bullion</h1>
-	<
+	<div class="pane">
 	<h2>Delete Category</h2>
 	</br>
 	
 	<form action = '{{url_for('deleteCategory', category_id = category_id) }}' method = 'post'>
-	<b> Are you sure to delete '{{deletedCategory.name}}' ? </b> 
-	</br>
-	<input type = 'submit' value = 'Delete'>
 
+	<b> Are you sure to delete '{{deletedCategory.name}}' ? </b>
+	</br></br>
+	<input type = 'submit' value = 'Delete'>
+	</div
 	</form>
 
 	</br>

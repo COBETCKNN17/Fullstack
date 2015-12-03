@@ -320,9 +320,9 @@ def editCoin(category_id, item_id):
         if request.form['mint']:
             editedItem.mint = request.form['mint']
         if request.form['image']:
-            editedItem.price = request.form['image']
+            editedItem.image = request.form['image']
         if request.form['description']:
-            editedItem.image = request.form['description']
+            editedItem.description = request.form['description']
         session.add(editedItem)
         session.commit()
         flash("Coin has been edited")
