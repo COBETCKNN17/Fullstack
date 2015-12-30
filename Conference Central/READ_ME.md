@@ -63,9 +63,7 @@ Note: To deploy this API server locally the [Google App Engine SDK for Python](h
 2. Run `dev_appserver.py DIR` or launch the app from the GUI app launcher Google provides in their API download.  Ensure it's running by visiting your local server's address, which is likely to be [localhost:8080][1]].
 
 Instructions speicific to each deployment: 
-1. Update the value of `application` in `app.yaml` to the app ID you
-   have registered in the App Engine admin console and would like to use to host
-   your instance of this sample.
+1. Update the value of `application` in `app.yaml` to the app ID you have registered in the App Engine admin console and would like to use to host your instance of this sample.
 
 2. Update the values at the top of `settings.py` to the CLIENT_ID you registered in the Google Developer Console
 
