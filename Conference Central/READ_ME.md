@@ -1,73 +1,78 @@
-# Udacity_Fullstack_Project4
-
-# App Engine application for the Udacity training course.
+# Udacity Fullstack Nanodegree Project 4
+# Course: Developing Scalable Apps in Python
 
 ### Description:
 
-This project is to improve upon and extend an existing Conference program written in Python using the Google App Engine Api.
+The objective of this project is to build upon backend functionality in the course-provided Conference Central Application.
 
-###Udacity project goals completed:
+###APIs:
+* Google Cloud Endpoints
+* Google API Explorer,
 
 ### 1: Add Sessions to a Conference
 
-Endpoints, Class, forms, and Indexes added to support multiple sessions per conference.
-Sessions are implemented with an ancestor relationship to their conference.
-Sessions are memcached for performance due to the probability that they will be queried often.
+Endpoints added:
+* createSession: open for organizer of conference 
+* getConferenceSessions: return all sessions, knowing conference 
+* getConferenceSessionsByType: Given a conference, return all sessions of a specified type
+* getSessionsBySpeaker: Given a speaker, return all sessions given by this particular speaker for all conferences 
 
-Endpoints added include:
-* createSession,
-* getConferenceSessions
-* getConferenceSessionsByType
-* getSessionsBySpeaker
+
+Endpoints and Classes were added to support multiple sessions per conference.
+Sessions are memcached for performance because they can be queried often.
 
 
 ### 2: Add sessions ot User Wishlist
 
-Wishlist are stored in the user's profile.  The profile model was adjusted to add this functionality.
+Wishlist are stored in the user's profile. Changes made to profile. 
 
-Endpoints added include:
-* addSessionToWishlist
-* getSessionsInWishlist
+Endpoints added: 
+* addSessionToWishlist: adds the session to the user's list of sessions they will attend 
+* getSessionsInWishlist: query for all the sessions in a conference that the user will attend 
 
 ### 3: Work on indexes and queries
 
-Indexes were created to allow for filtering.  A problem query related to pulling all sessions before 7pm and excluding workShop was implemented.  The key takeaway form this is that it can not be done a simple query due to the limitation of datastore allowing only a single inequality filter.  To work around this, the time filter is implemented in the query and the session type filter is done in the python on the results of the first query.
+Create 2 additional queries (see end of conference.py script)
+* getThirtyMinSessions: find sessions that last between 0 and 30 minutes
+* getGenericTypeSessions: return sessions of Generic Type
 
-I implemented this in a slightly more flexible way than requested.  Instead of 7pm and workshop type, the endpoint added accepts an hour as an interval in 24 hour format and a session type to filter as a string.
+API Explorer enables the review of these queries
 
-Additionally, two queries to help find Sessions that have default values still were added.  One find sessions with unknown highlights and the other finds ones with a Generic session type.
+Query Problem: Let’s say that you don't like workshops and you don't like sessions after 7 pm. How would you handle a query for all non-workshop sessions before 7 pm?
 
-Endpoints added include:
-* getSessionsBeforeHourExcludingType
-* getUnknownHighlightsSessions
-* getGenericSessions
+The challenge is that an inequality filter can be applied to one attribute at a time. Since there are two attributes involved, workshops/non-workshops and start time before 7pm, two filters are required. One way to solve this is to assemble the types that are not workshop. Then implement a time filter. Finally, query the sessions including the filter information in the query. 
+```py
+type = ['NOT_SPECIFIED', 'KEYNOTE', 'LECTURE']
+time = datetime.strptime("19:00", "%H:%M").time()
 
+sessions = Session.query(ndb.AND(Session.typeOfSession.IN(type), Session.startTime < time))
+
+return sessions
+```
 
 ### 4: Add support for a feature speaker and an endpoint to get that speaker
 
-Featured speaker was implemented somewhat similar to the existing announcement feature.  The featured speaker is stored only in memcache as it is not vital to have long term.  If a speaker has more than one session, they are added as the featured speaker at the time a new session is added for them.
-
-Endpoints added include:
-* getFeaturedSpeaker
+* getFeaturedSpeaker(): When a new session is added to a conference if there is more than one session
+   by this speaker, return featured speaker / sessions from memcache.
 
 ### Setup Instructions:
 
 Note: To deploy this API server locally the [Google App Engine SDK for Python](https://cloud.google.com/appengine/downloads) is required.
 
 1. Clone the git repository (or download it from the submission)
-2. Run `dev_appserver.py DIR` or launch the app from the GUI app launcher Google provides in their API download.  Ensure it's running by visiting your local server's address, which is likely to be [localhost:8080][5]].
+2. Run `dev_appserver.py DIR` or launch the app from the GUI app launcher Google provides in their API download.  Ensure it's running by visiting your local server's address, which is likely to be [localhost:8080][1]].
 
 Optionally you can follow these instructions to set it up for your own deplayment:
-
 1. Update the value of `application` in `app.yaml` to the app ID you
    have registered in the App Engine admin console and would like to use to host
    your instance of this sample.
-1. Update the values at the top of `settings.py` to
-   reflect the respective client IDs you have registered in the
-   [Developer Console][4].
-1. Update the value of CLIENT_ID in `static/js/app.js` to the Web client ID
-1. (Optional) Mark the configuration files as unchanged as follows:
+2. Update the values at the top of `settings.py` to the CLIENT_ID you registered in the Google Developer Console. 
+3. Update the value of CLIENT_ID in `static/js/app.js` to the Web client ID in your Google Developer Console 
+4. (Optional) Mark the configuration files as unchanged as follows:
    `$ git update-index --assume-unchanged app.yaml settings.py static/js/app.js`
-1. Run the app with the devserver using `dev_appserver.py DIR`, and ensure it's running by visiting your local server's address (by default [localhost:8080][5].)
-1. (Optional) Generate your client library(ies) with [the endpoints tool][6].
-1. Deploy your application.
+5. Run the app with the devserver using `dev_appserver.py DIR`, and ensure it's running by visiting your local server's address (by default localhost:8080)
+6. (Optional) Generate your client library(ies) [the endpoints tool][2].
+7. Deploy your application.
+
+[1]: https://localhost:8080/
+[2]: https://developers.google.com/appengine/docs/python/endpoints/endpoints_tool

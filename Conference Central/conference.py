@@ -806,8 +806,8 @@ class ConferenceApi(remote.Service):
     @endpoints.method(message_types.VoidMessage,
                       SessionForms,
                       http_method='GET',
-                      name='getShortSessions')
-    def getShortSessions(self, request):
+                      name='getThirtyMinSessions')
+    def getThirtyMinSessions(self, request):
         """Return all sessions between 5 and 30 minutes long with duration specified in minutes"""
 
         sessions = Session.query(ndb.AND(Session.duration > 0, Session.duration < 30))
@@ -818,8 +818,8 @@ class ConferenceApi(remote.Service):
     @endpoints.method(message_types.VoidMessage,
                       SessionForms,
                       http_method='GET',
-                      name='getGenericSessions')
-    def getGenericSessions(self, request):
+                      name='getGenericTypeSessions')
+    def getGenericTypeSessions(self, request):
         """Returns sessions still using the Generic type"""
 
         sessions = Session.query(Session.typeOfSession == 'Generic')
