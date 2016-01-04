@@ -71,7 +71,7 @@ Create 2 additional queries (see end of conference.py script)
 
 API Explorer enables the review of these queries
 
-Query Problem: Let’s say that you don't like workshops and you don't like sessions after 7 pm. How would you handle a query for all non-workshop sessions before 7 pm?
+### Query Problem: Let’s say that you don't like workshops and you don't like sessions after 7 pm. How would you handle a query for all non-workshop sessions before 7 pm?
 
 The challenge is that an inequality filter can be applied to one attribute at a time. Since there are two attributes involved, 
 workshops/non-workshops and start time before 7pm, two filters are required. 
