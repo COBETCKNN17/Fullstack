@@ -27,7 +27,6 @@ class Profile(ndb.Model):
     mainEmail = ndb.StringProperty()
     teeShirtSize = ndb.StringProperty(default='NOT_SPECIFIED')
     conferenceKeysToAttend = ndb.StringProperty(repeated=True)
-    sessionKeysInWishlist = ndb.StringProperty(repeated=True)
 
 class ProfileMiniForm(messages.Message):
     """ProfileMiniForm -- update Profile form message"""
@@ -40,15 +39,14 @@ class ProfileForm(messages.Message):
     mainEmail = messages.StringField(2)
     teeShirtSize = messages.EnumField('TeeShirtSize', 3)
     conferenceKeysToAttend = messages.StringField(4, repeated=True)
-    sessionKeysInWishlist = messages.StringField(5, repeated=True)
-
-class StringMessage(messages.Message):
-    """StringMessage-- outbound (single) string message"""
-    data = messages.StringField(1, required=True)
 
 class BooleanMessage(messages.Message):
     """BooleanMessage-- outbound Boolean value message"""
     data = messages.BooleanField(1)
+
+class StringMessage(messages.Message):
+    """StringMessage-- outbound (single) string message"""
+data = messages.StringField(1, required=True)
 
 class Conference(ndb.Model):
     """Conference -- Conference object"""
@@ -58,7 +56,7 @@ class Conference(ndb.Model):
     topics          = ndb.StringProperty(repeated=True)
     city            = ndb.StringProperty()
     startDate       = ndb.DateProperty()
-    month           = ndb.IntegerProperty() # TODO: do we need for indexing like Java?
+    month           = ndb.IntegerProperty()
     endDate         = ndb.DateProperty()
     maxAttendees    = ndb.IntegerProperty()
     seatsAvailable  = ndb.IntegerProperty()
@@ -71,9 +69,9 @@ class ConferenceForm(messages.Message):
     topics          = messages.StringField(4, repeated=True)
     city            = messages.StringField(5)
     startDate       = messages.StringField(6) #DateTimeField()
-    month           = messages.IntegerField(7)
-    maxAttendees    = messages.IntegerField(8)
-    seatsAvailable  = messages.IntegerField(9)
+    month           = messages.IntegerField(7, variant=messages.Variant.INT32)
+    maxAttendees    = messages.IntegerField(8, variant=messages.Variant.INT32)
+    seatsAvailable  = messages.IntegerField(9, variant=messages.Variant.INT32)
     endDate         = messages.StringField(10) #DateTimeField()
     websafeKey      = messages.StringField(11)
     organizerDisplayName = messages.StringField(12)
@@ -106,59 +104,70 @@ class ConferenceQueryForm(messages.Message):
     operator = messages.StringField(2)
     value = messages.StringField(3)
 
+
+class Speaker(ndb.Model):
+    """Speaker -- Speaker object"""
+    name = ndb.StringProperty(required=True)
+
+
+class SpeakerForm(messages.Message):
+    """SpeakerForm - Speaker outbound form message"""
+    speaker = messages.StringField(1)
+    sessionNames = messages.StringField(2)
+
+
+class Session(Conference):
+    """Session -- Session object -- child of the Conference"""
+    name = ndb.StringProperty(required=True)
+    organizerUserId = ndb.StringProperty()
+    highlights = ndb.StringProperty()
+    speaker = ndb.KeyProperty(kind='Speaker', required=True)
+    location = ndb.StringProperty()
+    duration = ndb.StringProperty()
+    typeOfSession = ndb.StringProperty()
+    date = ndb.DateProperty()
+    startTime = ndb.TimeProperty()
+
+
+class SessionForm(messages.Message):
+    """SessionForm -- Session outbound from message"""
+    name = messages.StringField(1)
+    highlights = messages.StringField(2)
+    speaker = messages.StringField(3)
+    location = messages.StringField(4)
+    duration = messages.StringField(5)
+    typeOfSession = messages.StringField(6)
+    date = messages.StringField(7)
+    startTime = messages.StringField(8)
+    websafeKey = messages.StringField(9)
+    conferenceName = messages.StringField(10)
+    organizerUserId = messages.StringField(12)
+
+class SessionForms(messages.Message):
+    """SessionForms -- multiple Session outbound from message"""
+    items = messages.MessageField(SessionForm, 1, repeated=True)
+
+class SessionQueryForm(messages.Message):
+    """SessionQueryForm -- Session query inbound form message"""
+    field = messages.StringField(1)
+    operator = messages.StringField(2)
+    value = messages.StringField(3)
+
+
+class SessionQueryForms(messages.Message):
+    """SessionQueryForms -- multiple SessionQueryForm inbound from message"""
+    filters = messages.MessageField(SessionQueryForm, 1, repeated=True)
+
+
+class ConferenceQueryForm(messages.Message):
+    """ConferenceQueryForm -- Conference query inbound form message"""
+    field = messages.StringField(1)
+    operator = messages.StringField(2)
+    value = messages.StringField(3)
+
 class ConferenceQueryForms(messages.Message):
     """ConferenceQueryForms -- multiple ConferenceQueryForm inbound form message"""
     filters = messages.MessageField(ConferenceQueryForm, 1, repeated=True)
 
-class Session(ndb.Model):
-    """Session - conference session object"""
-    name          = ndb.StringProperty(required=True)
-    highlights    = ndb.StringProperty(repeated=True)
-    speaker       = ndb.StringProperty()
-    duration      = ndb.IntegerProperty()
-    typeOfSession = ndb.StringProperty()
-    date          = ndb.DateProperty()
-    startTime     = ndb.TimeProperty()
-
-class SessionForm(messages.Message):
-    """SessionForm -- Session outbound form message"""
-    name          = messages.StringField(1)
-    highlights    = messages.StringField(2)
-    speaker       = messages.StringField(3)
-    duration      = messages.IntegerField(4)
-    date          = messages.StringField(5)
-    startTime     = messages.StringField(6)
-    typeOfSession = messages.StringField(7)
-    websafeKey    = messages.StringField(8)
-
-class SessionForms(messages.Message):
-    """SessionForms -- multiple Session outbound form message"""
-    items = messages.MessageField(SessionForm, 1, repeated=True)
-
-class SessionType(messages.Enum):
-    """SessionType -- session type enumeration value"""
-    NOT_SPECIFIED = 1
-    WORKSHOP = 2
-    LECTURE = 3
-    PRESENTATION = 4
-    HANDS_ON = 5
-
-class WishlistSession(ndb.Model):
-    """WishlistSession - conference session wishlist object"""
-    userId = ndb.StringProperty()
-    addDate = ndb.DateTimeProperty(auto_now_add=True)
-    sessionConferenceKey = ndb.StringProperty(required=True)
-    sessionKey = ndb.StringProperty(required=True)
-
-
-class WishlistSessionForm(messages.Message):
-    """WishlistSessionForm -- WishlistSession outbound form message"""
-    userId = messages.StringField(1)
-    sessionConferenceKey = messages.StringField(2)
-    sessionKey = messages.StringField(3)
-    addDate = messages.StringField(4)
-    websafeKey = messages.StringField(5)
-
-class WishlistSessionForms(messages.Message):
-    """WishlistSessionForms -- multiple WishlistSession outbound form message"""
-    items = messages.MessageField(WishlistSessionForm, 1, repeated=True)
+class SessionGetRequest(messages.Message):
+    speaker = messages.StringField(1)

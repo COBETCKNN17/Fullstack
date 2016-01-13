@@ -54,20 +54,19 @@ Endpoints added:
 Endpoints and Classes were added to support multiple sessions per conference.
 Sessions are memcached for performance because they can be queried often.
 
-
 ### 2: Add sessions ot User Wishlist
 
 Wishlist Session form is created to build upon in add and remove methods.
 
 Endpoints added: 
 * addSessionToWishlist: adds the session to the user's list of sessions they will attend 
-* getSessionsInWishlist: query for all the sessions in a conference that the user will attend 
+* getSessionInWishlist: query for all the sessions in a conference that the user will attend 
 
 ### 3: Work on indexes and queries
 
 Create 2 additional queries (see end of conference.py script)
+* getIncompleteSessions: Return all sessions with default information for speaker, duration, or type
 * getThirtyMinSessions: find sessions that last between 0 and 30 minutes
-* getGenericTypeSessions: return sessions of Generic Type
 
 API Explorer enables the review of these queries
 
@@ -96,6 +95,7 @@ speaker with the most sessions is marked in the speaker key in memcache and can 
 
 * getFeaturedSpeaker(): When a new session is added to a conference if there is more than one session
    by this speaker, return featured speaker / sessions from memcache.
+* cacheFeaturedSpeaker(): Update new featured speaker to memcache. This is used by cron job.
 
 
 [1]: https://localhost:8080/
