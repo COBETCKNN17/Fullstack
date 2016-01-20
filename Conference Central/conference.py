@@ -60,6 +60,7 @@ ANNOUNCEMENT_TPL = ('Last chance to attend! The following conferences '
 
 MEMCACHE_FEATURE_SESSIONS_KEY = "RECENT_SESSION_ANNOUNCEMENTS"
 FEATURE_SESSIONS_TPL = ('Special Announcement! %s is special attraction on %s')
+SPEAKER_STRING = ('Several chances to hear from %s, in all these sessions: %s!')
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -454,6 +455,37 @@ class ConferenceApi(remote.Service):
         """Update & return user profile."""
         return self._doProfile(request)
 
+# - - - Announcements - - - - - - - - - - - - - - - - - - - -
+
+    @staticmethod
+    def _cacheAnnouncement():
+        """Create Announcement & assign to memcache; used by
+        memcache cron job & putAnnouncement().
+        """
+        confs = Conference.query(ndb.AND(
+            Conference.seatsAvailable <= 5,
+            Conference.seatsAvailable > 0)
+        ).fetch(projection=[Conference.name])
+        if confs:
+            # If there are almost sold out conferences,
+            # format announcement and set it in memcache
+            announcement = ANNOUNCEMENT_TPL % (
+                ', '.join(conf.name for conf in confs))
+            memcache.set(MEMCACHE_ANNOUNCEMENTS_KEY, announcement)
+        else:
+            # If there are no sold out conferences,
+            # delete the memcache announcements entry
+            announcement = ""
+            memcache.delete(MEMCACHE_ANNOUNCEMENTS_KEY)
+        return announcement
+
+    @endpoints.method(message_types.VoidMessage, StringMessage,
+                      path='conference/announcement/get',
+                      http_method='GET', name='getAnnouncement')
+    def getAnnouncement(self, request):
+        """Return Announcement from memcache."""
+        return StringMessage(
+            data=memcache.get(MEMCACHE_ANNOUNCEMENTS_KEY) or "")
 
 # - - - Registration - - - - - - - - - - - - - - - - - - - -
 
@@ -659,7 +691,7 @@ class ConferenceApi(remote.Service):
             taskqueue.add(
                 params={'speakerName': speakerName,
                         'sessionNames': [sessionNames]},
-                url='/tasks/update_featured_speaker'
+                url='/tasks/set_featured_speaker'
             )
 
         # return request
@@ -875,17 +907,15 @@ class ConferenceApi(remote.Service):
         return sf
 
     @staticmethod
-    def _cacheFeaturedSpeaker(speakerName, sessionNames):
-        """Update new featured speaker to memcache; used by
-        memcache cron job.
-        """
-        cache_data = {}
-        cache_data['speaker'] = speakerName
-        cache_data['sessionNames'] = sessionNames
-        if not memcache.set(MEMCACHE_FEATURED_SPEAKER_KEY, cache_data):
-            logging.error('Memcache set failed.')
-        return cache_data
-
+    def _cacheFeaturedSpeaker(speaker, conferenceKey):
+        """Manage memcache featured speaker. If current checked speaker
+           should be featured, replace any previous speaker"""
+        sessions = Session.query(ancestor=ndb.Key(urlsafe=conferenceKey))
+        sessions = sessions.filter(Session.speaker == speaker).fetch()
+        if len(sessions) > 1:
+            speakerAnnouncement = SPEAKER_STRING % (speaker,
+                ', '.join(session.sessionName for session in sessions))
+            memcache.set(MEMCACHE_FEATURED_SPEAKER_KEY, speakerAnnouncement)
 
 
 # - - - Additional Queries  - - - - - - - - - - - - - - - - - - - -
@@ -916,7 +946,7 @@ class ConferenceApi(remote.Service):
 
         return SessionForms(items=[self._copySessionToForm(session) for session in sessions])
 
-# - - - Announcements - - - - - - - - - - - - - - - - - - - -
+# - - - - - -  - - - - - - - - - - - - - - - - - - - -
 
 
 api = endpoints.api_server([ConferenceApi]) # register API

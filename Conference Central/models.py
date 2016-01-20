@@ -116,7 +116,7 @@ class SpeakerForm(messages.Message):
     sessionNames = messages.StringField(2)
 
 
-class Session(Conference):
+class Session(ndb.Model):
     """Session -- Session object -- child of the Conference"""
     name = ndb.StringProperty(required=True)
     organizerUserId = ndb.StringProperty()
